@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>এডমিন প্যানেল</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #fdfdfd;
+    }
+    h1 {
+      text-align: center;
+      color: #007b5e;
+    }
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #f1f1f1;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007b5e;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005c46;
+    }
+    .list {
+      max-width: 500px;
+      margin: 30px auto;
+    }
+    .member {
+      background: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .member span {
+      flex: 1;
+    }
+    .member button {
+      background: red;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .back-link a {
+      text-decoration: none;
+      color: #007b5e;
+    }
+  </style>
+</head>
+<body>
+  <h1>এডমিন প্যানেল</h1>
+  <form id="form">
+    <input type="text" id="name" placeholder="নাম লিখুন" required />
+    <input type="text" id="role" placeholder="ভূমিকা (যেমনঃ ডিজাইনার)" required />
+    <input type="url" id="image" placeholder="ছবির লিংক (ঐচ্ছিক)" />
+    <button type="submit">যোগ করুন</button>
+  </form>
+
+  <div class="list" id="memberList"></div>
+
+  <div class="back-link">
+    <a href="index.html">← পাবলিক পেজে যান</a>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const name = document.getElementById('name');
+    const role = document.getElementById('role');
+    const image = document.getElementById('image');
+    const list = document.getElementById('memberList');
+
+    let members = JSON.parse(localStorage.getItem('teamMembers')) || [];
+
+    function save() {
+      localStorage.setItem('teamMembers', JSON.stringify(members));
+      render();
+    }
+
+    function render() {
+      list.innerHTML = '';
+      members.forEach((m, i) => {
+        const div = document.createElement('div');
+        div.className = 'member';
+        div.innerHTML = `<span>${m.name} (${m.role})</span><button onclick="remove(${i})">মুছুন</button>`;
+        list.appendChild(div);
+      });
+    }
+
+    function remove(index) {
+      members.splice(index, 1);
+      save();
+    }
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      members.push({
+        name: name.value,
+        role: role.value,
+        image: image.value
+      });
+      form.reset();
+      save();
+    };
+
+    render();
+  </script>
+</body>
+</html>
